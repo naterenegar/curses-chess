@@ -4,7 +4,7 @@ from ptypes import ptypes
 
 class player():
 
-    def resetPieces(self):
+    def setPieces(self):
         tmp = [None] * 16 
         tmp[0] = piece(self.name + '.r1', ptypes.ROOK)
         tmp[1] = piece(self.name + '.k1', ptypes.KNIGHT)
@@ -21,7 +21,7 @@ class player():
 
     def __init__(self, name):
         self.name = name
-        self.pieces = self.resetPieces()     
+        self.pieces = self.setPieces()     
 
        
      
