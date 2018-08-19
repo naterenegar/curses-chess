@@ -1,0 +1,18 @@
+import piece, board, player, curses
+from curses import wrapper
+
+#def main(stdscr):
+    # Clear screen
+#    stdscr.clear()
+
+#    cols = curses.COLS - 1
+#    lines = curses.LINES - 1
+
+#    message = "PyChess"                                      
+#    stdscr.addstr(int(lines/4), int((cols - len(message))/2), message)    
+#    stdscr.addstr(int(lines/4)+1, int(cols/2)+8, "┣")
+
+#    stdscr.refresh()
+   stdscr.getkey()
+
+wrapper(main)
