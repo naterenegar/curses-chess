@@ -51,9 +51,17 @@ class Game():
                 valid = False
             elif(player == 1 and check > 15):
                 valid = False
+           
+        # These will be set based on piece then used in common logic (excluding pawn) 
+        # This reduces code duplication
+        bad_row = None
+        bad_col = None
+        bad_kill = None
 
-        # Pawn logic 
-        if(piece > 7 and piece < 16):
+        pawn = piece > 7 and piece < 16
+
+        # Pawn logic (only piece that acts differently on first turn)
+        if(pawn):
             bad_row = pos[0] - p_pos[0] != (1 * pmod)
             bad_row2 = pos[0] - p_pos[0] != (2 * pmod)
             bad_col = pos[1] - p_pos[1] != 0
@@ -74,7 +82,23 @@ class Game():
                     if((bad_row and bad_row2) or bad_col):
                         valid = False
                     pc.setMoved()
-        
+
+        # Rook logic 
+        if(piece == 0 or piece == 7):
+            bad_row = pos[1] - p_pos[1] != 0 and pos[0] - p_pos[0] != 0
+            bad_col = bad_row
+            bad_kill = bad_row
+
+        if(not pawn):
+            if(check != -1):
+                if(bad_row or bad_kill):
+                    valid = False
+                else:
+                    tmp_pc = check - 16 if check > 15 else check
+                    op.pieces[tmp_pc].kill()
+            else:
+                if(bad_row or bad_col):
+                    valid = False 
 
 
         if(valid):
