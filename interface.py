@@ -195,7 +195,7 @@ def get_move(scr, in_pos):
                 raise ValueError()
 
             row = int(tmp[0]) - 1       
-            if(row < 1 or row > 8):
+            if(row < 0 or row > 7):
                 raise ValueError()
 
             col = ord(tmp[2])
