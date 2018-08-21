@@ -4,10 +4,17 @@ class piece():
         self.name = name 
         self.ty = ty
         self.pos = (0,0)
+        self.moved = False
             
     def __str__(self):
         return str(self.name)
-     
+
+    def setMoved(self):
+        self.moved = True    
+
+    def hasMoved(self):
+        return self.moved
+ 
     def getPosition(self):
         return self.pos
 
@@ -18,7 +25,12 @@ class piece():
         return ty
        
     def setPos(self, pos):
-        self.pos = pos
+        if(self.isAlive()):
+            self.pos = pos
+
+    def kill(self):
+        self.alive = False
+        self.pos = (-1, -1)
  
     def isAlive(self):
         return self.alive
