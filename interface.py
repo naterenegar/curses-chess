@@ -32,11 +32,6 @@ def main(stdscr):
     stdscr.refresh()
     stdscr.getkey()
 
-
-    tmp = get_str(stdscr, 40)
-    stdscr.addstr(1, 0, tmp)       
-
-  
     in_progress = True 
     while(in_progress):
         move = get_move(comm, c_pos) 
@@ -107,7 +102,8 @@ def get_str(scr, max_len):
 
     curses.echo()
     curses.curs_set(2)
-    
+    scr.keypad(True)   
+ 
     usr_in = ''
     cur_len = 1;
     tmp = scr.getkey()   
@@ -119,7 +115,10 @@ def get_str(scr, max_len):
             curs_pos = scr.getyx()
             scr.addstr(curs_pos[0], curs_pos[1], " ")
             scr.move(curs_pos[0], curs_pos[1])
-        else:
+        elif tmp == 'KEY_BACKSPACE' and cur_len <= 1:
+            curs_pos = scr.getyx()
+            scr.move(curs_pos[0], curs_pos[1] + 1)
+        elif tmp != 'KEY_BACKSPACE':
             usr_in += tmp
             cur_len += 1
         tmp = scr.getkey()

@@ -28,16 +28,25 @@ class Game():
         p_pos = p.pieces[piece].getPosition()
         pstr = str(p.pieces[piece])
 
-        # Draw over old position
-        if((p_pos[0] % 2 == 0 and p_pos[1] % 2 == 0) or (p_pos[0] % 2 == 1 and p_pos[1] % 2 == 1)):
-            self.scr.addstr(self.pos[p_pos[0]][p_pos[1]][0], self.pos[p_pos[0]][p_pos[1]][1], "  ", curses.color_pair(2))  
-        else:
-            self.scr.addstr(self.pos[p_pos[0]][p_pos[1]][0], self.pos[p_pos[0]][p_pos[1]][1], "  ", curses.color_pair(1))  
-           
+        valid = False
+        # Check if move is valid 
+        if(pos[0] - p_pos[0] == 1 and pos[1] - p_pos[1] == 0):
+            valid = True
 
+        if(valid):
+            # Draw over old position if so
+            if((p_pos[0] % 2 == 0 and p_pos[1] % 2 == 0) or (p_pos[0] % 2 == 1 and p_pos[1] % 2 == 1)):
+                self.scr.addstr(self.pos[p_pos[0]][p_pos[1]][0], self.pos[p_pos[0]][p_pos[1]][1], "  ", curses.color_pair(2))  
+            else:
+                self.scr.addstr(self.pos[p_pos[0]][p_pos[1]][0], self.pos[p_pos[0]][p_pos[1]][1], "  ", curses.color_pair(1))  
  
-        p.pieces[piece].setPos(pos)
-        self.scr.addstr(self.pos[pos[0]][pos[1]][0], self.pos[pos[0]][pos[1]][1], pstr, curses.color_pair(player+3))  
+            p.pieces[piece].setPos(pos)
+            self.scr.addstr(self.pos[pos[0]][pos[1]][0], self.pos[pos[0]][pos[1]][1], pstr, curses.color_pair(player+3))  
+            self.scr.addstr(1, 1, "             ")
+        else:
+            self.scr.addstr(1, 1, "INVALID MOVE!")
+
+
         self.scr.refresh()
 
     def startGame(self):
