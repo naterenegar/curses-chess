@@ -34,6 +34,7 @@ def main(stdscr):
 
     in_progress = True 
     while(in_progress):
+        display_info(info, game1)
         move = get_move(comm, c_pos) 
         game1.move(move[0], move[1], move[2])
 
@@ -135,8 +136,12 @@ def get_max_len(scr, message):
     return scr.getmaxyx()[1] - 2 - len(message) 
 
 
-def get_move(scr, in_pos):
+def display_info(scr, game):
+    for i in range(0, 16):
+        scr.addstr(i + 1, 1, "Piece " + str(i+1) + ": " + str(game.players[0].pieces[i]))
+    scr.refresh()
 
+def get_move(scr, in_pos):
     cur_line = 0 
     move = [None] * 3
 
