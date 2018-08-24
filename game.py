@@ -29,7 +29,6 @@ class Game():
 
         return -1
 
-
     def move(self, player, piece, pos):
 
         p = self.players[player]
@@ -82,7 +81,8 @@ class Game():
                 else:
                     if((bad_row and bad_row2) or bad_col):
                         valid = False
-                    pc.setMoved()
+                    else:
+                        pc.setMoved()
 
         # Rook logic 
         if(piece == 0 or piece == 7):
@@ -108,7 +108,7 @@ class Game():
 
         # Queen logic
         if(piece == 4):
-            bad_move = abs(drow) != abs(dcol)
+            bad_move = (abs(drow) != abs(dcol)) and (dcol != 0 and drow != 0) 
 
         if(not pawn):
             if(bad_move):
@@ -132,19 +132,5 @@ class Game():
 
 
         self.scr.refresh()
-
-    def startGame(self):
-        turn = True
-        for i in range(0, 1):
-            print("\033[H\033[J")
-            self.printBoard()
-            if turn:
-                input("\n" + self.p1.name + " select a piece: ")
-                input(self.p1.name + " make a move: ")
-                turn = False
-            else:
-                input("\n" + self.p2.name + " select a piece: ")
-                input(self.p2.name + " make a move: ")
-                turn = True 
 
 

@@ -5,6 +5,9 @@ def main(stdscr):
     # Clear screen
     stdscr.clear()
 
+    curses.init_pair(5, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(6, curses.COLOR_RED, curses.COLOR_BLACK)
+
     curses.curs_set(0)
 
     lines = curses.LINES - 1
@@ -22,6 +25,7 @@ def main(stdscr):
     
     info = stdscr.subwin(curses.LINES, int(curses.COLS/5), 0, int((4/5)*curses.COLS) + 1)
     info.border()
+    
 
     # Passing numbers greater than 8 or so will break this (attempting to draw outside window)
     pos = draw_board(board, board.getmaxyx()[0], board.getmaxyx()[1], 3, 6)
@@ -29,6 +33,7 @@ def main(stdscr):
 
     game1 = game.Game("Nate", "Olivia", pos, board)
 
+   
     stdscr.refresh()
     stdscr.getkey()
 
@@ -85,11 +90,34 @@ def draw_board(scr, lines, cols, box_lines, box_cols):
 
     return positions
 
+def display_info(scr, game):
+    pair_0, pair_1 = 0, 0
+    divs = int(scr.getmaxyx()[0]/4) 
+
+    # Column headers
+    scr.addstr(1, 1 + divs * 0, "Piece")
+    scr.addstr(1, 1 + divs * 1, "Player 1")
+    scr.addstr(1, 1 + divs * 2, "Player 2")
+
+      
+
+
+
+    for i in range(0, 16):
+        pair_0 = 5 if game.players[0].pieces[i].isAlive() else 6
+        pair_1 = 5 if game.players[1].pieces[i].isAlive() else 6
+    
+        scr.addstr(i + 3, 1 + divs * 0, str(game.players[0].pieces[i]))
+        scr.addstr(i + 3, 1 + divs * 1, "Alive" if pair_0 == 5 else "Dead ", curses.color_pair(pair_0))
+        scr.addstr(i + 3, 1 + divs * 2, "Alive" if pair_1 == 5 else "Dead ", curses.color_pair(pair_1))
+
+    scr.refresh()
+
 def set_pieces(scr, pos):
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_CYAN)
     curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_YELLOW)
 
-    pieces = {0:"R1", 1:"k1", 2:"B1", 3:"Kg", 4:"Qn", 5:"B2", 6:"k2", 7:"R2"}
+    pieces = {0:"R1", 1:"K1", 2:"B1", 3:"Kg", 4:"Qn", 5:"B2", 6:"K2", 7:"R2"}
         
     for i in range(0, 8):
         scr.addstr(pos[0][i][0], pos[0][i][1], pieces[i], curses.color_pair(3))  
@@ -136,15 +164,13 @@ def get_max_len(scr, message):
     return scr.getmaxyx()[1] - 2 - len(message) 
 
 
-def display_info(scr, game):
-    for i in range(0, 16):
-        scr.addstr(i + 1, 1, "Piece " + str(i+1) + ": " + str(game.players[0].pieces[i]))
-    scr.refresh()
-
 def get_move(scr, in_pos):
     cur_line = 0 
     move = [None] * 3
 
+    pieces = {"R1": 0, "K1": 1, "B1": 2, "KG": 3, "QN": 4, "B2": 5, "K2": 6, "R2": 7, 
+              "P1": 8, "P2": 9, "P3": 10, "P4": 11, "P5": 12, "P6": 13, "P7": 14, "P8": 15}
+    
     need_input = True
     while(need_input):
         # Get the player number
@@ -169,22 +195,18 @@ def get_move(scr, in_pos):
     need_input = True
     while(need_input):
         # Get the piece number
-        message = "Enter piece number: " 
+        message = "Enter piece: " 
         scr.addstr(in_pos[0] + cur_line, in_pos[1], message) 
         tmp = get_str(scr, get_max_len(scr, message))
         cur_line += 1
     
+         
         try:
-            piece_num = int(tmp) - 1
-            if(piece_num > 15 or piece_num < 0):
-                raise ValueError()
-
-            # If we make it here, the input is good!
-            move[1] = piece_num
-        
+            tmp = tmp.upper()
+            move[1] = pieces[tmp[0:2]]
             need_input = False
-        except ValueError:
-            scr.addstr(in_pos[0] + cur_line, in_pos[1], "Please enter a valid piece number") 
+        except KeyError:
+            scr.addstr(in_pos[0] + cur_line, in_pos[1], "Please enter a valid piece") 
             cur_line += 1          
 
     need_input = True
