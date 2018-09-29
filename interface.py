@@ -12,6 +12,9 @@ def main(stdscr):
 
     lines = curses.LINES - 1
     cols = curses.COLS - 1
+
+    # Menu screen section
+    result = menu_screen(stdscr)
     
     # Diving the screen into 3 parts
 
@@ -49,6 +52,72 @@ def main(stdscr):
 
     return pos
 
+def menu_screen(scr):
+    mid_line = int(curses.LINES/2)
+    mid_col = int(curses.COLS/2)
+   
+    menu_options = ["Welcome to PyChess!", "Start Game", "Quit"]
+   
+    scr.addstr(mid_line - int(len(menu_options) / 2), mid_col-int(len(menu_options[0])/2), menu_options[0], curses.A_BOLD)
+    scr.keypad(True)
+
+    key = -1 
+    attrs = [curses.A_REVERSE, 0]
+    while(key != '\n'):
+        if key == 'KEY_DOWN':
+            attrs[0] = 0
+            attrs[1] = curses.A_REVERSE               
+        elif key == 'KEY_UP':
+            attrs[0] = curses.A_REVERSE
+            attrs[1] = 0
+ 
+        scr.addstr(mid_line - int(len(menu_options) / 2) + 2, mid_col-int(len(menu_options[1])/2), menu_options[1], attrs[0])
+        scr.addstr(mid_line - int(len(menu_options) / 2) + 3, mid_col-int(len(menu_options[2])/2), menu_options[2], attrs[1])
+        scr.refresh() 
+        
+        key = scr.getkey() 
+
+    scr.clear()
+
+    if attrs[0] == curses.A_REVERSE:
+        game_options = ["1 Player", "2 Player"] 
+
+        key = -1
+        while(key != '\n'):
+            if key == 'KEY_DOWN':
+                attrs[0] = 0
+                attrs[1] = curses.A_REVERSE               
+            elif key == 'KEY_UP':
+                attrs[0] = curses.A_REVERSE
+                attrs[1] = 0
+    
+            scr.addstr(mid_line - int(len(game_options) / 2), mid_col-int(len(game_options[0])/2), game_options[0], attrs[0])
+            scr.addstr(mid_line - int(len(game_options) / 2) + 1, mid_col-int(len(game_options[1])/2), game_options[1], attrs[1])
+
+            scr.refresh() 
+            
+            key = scr.getkey() 
+    else:
+        exit()   
+
+    scr.clear()
+
+    if attrs[0] == curses.A_REVERSE:
+        mes = "Enter player name: " 
+        scr.addstr(mid_line, mid_col-int(len(mes)/2), mes)
+        name = get_str(scr, 16)
+        scr.clear() 
+        return 1
+    else:
+        mes = "Enter player 1's name: " 
+        mes2 = "Enter player 2's name: "
+        scr.addstr(mid_line, mid_col-int(len(mes)/2), mes)
+        name1 = get_str(scr, 16)
+        scr.addstr(mid_line + 1, mid_col-int(len(mes2)/2), mes2)
+        name2 = get_str(scr, 16)
+        scr.clear()
+        return 2 
+    
 def draw_board(scr, lines, cols, box_lines, box_cols):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_MAGENTA)
@@ -98,10 +167,6 @@ def display_info(scr, game):
     scr.addstr(1, 1 + divs * 0, "Piece")
     scr.addstr(1, 1 + divs * 1, "Player 1")
     scr.addstr(1, 1 + divs * 2, "Player 2")
-
-      
-
-
 
     for i in range(0, 16):
         pair_0 = 5 if game.players[0].pieces[i].isAlive() else 6
@@ -164,6 +229,7 @@ def get_max_len(scr, message):
     return scr.getmaxyx()[1] - 2 - len(message) 
 
 
+# Parses user input into a move
 def get_move(scr, in_pos):
     cur_line = 0 
     move = [None] * 3
@@ -248,5 +314,3 @@ def get_move(scr, in_pos):
     scr.border()
  
     return move 
- 
-
