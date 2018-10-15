@@ -2,7 +2,7 @@
 A chess game implemented in python and visualized with curses
 # Added features
   - Menu (not well integrated)
-  - 2 Player's, One Keyboard
+  - 2 players on one Keyboard
   - Piece status 
 # Planned features
   - Some sort of AI to play against
